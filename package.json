@@ -1,0 +1,21 @@
+{
+  "name": "sfschemaparser",
+  "version": "1.0.0",
+  "description": "permits the creation of a CSV file containing various fields info",
+  "main": "app.js",
+  "dependencies": {
+    "json2csv": "^3.5.1",
+    "xml2js": "^0.4.17",
+    "fs": "^0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "SFSchemaParser"
+  },
+  "author": "FraCarma",
+  "license": "MIT"
+}
