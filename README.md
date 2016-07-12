@@ -11,7 +11,6 @@ NodeJS Application that permits the creation of a CSV file containing various fi
 ```
 npm install
 ```
-
 1. Run the app in the cmd
 ```
 node app.js
