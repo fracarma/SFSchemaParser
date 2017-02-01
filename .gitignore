@@ -1,4 +1,7 @@
 /results/*
 /objects/*
+/svgUML/*
 /node_modules
 *.txt
+*.uml
+*.svg
