@@ -6,12 +6,13 @@ var fieldSchema = ['fullName','label','description','type','referenceTo','length
 
 
 var objectDirectory = __dirname + '/objects/';
+var resultsDirectory = __dirname + '/results/';
 files = fs.readdirSync(__dirname + '/objects/');
-var writeStream = fs.createWriteStream('completeResultUML.txt');
-var partialWriteStream = fs.createWriteStream('partialResultUML.txt');
-var writeStreamObjects = fs.createWriteStream('completeObjectDeclaration.txt');
-var partialwriteStreamObjects = fs.createWriteStream('partialObjectDeclaration.txt');
-var partialwriteStreamObjectsDetailed = fs.createWriteStream('partialObjectDeclarationWithDetails.txt');
+var writeStream = fs.createWriteStream(resultsDirectory+'completeResultUML.txt');
+var partialWriteStream = fs.createWriteStream(resultsDirectory+'partialResultUML.txt');
+var writeStreamObjects = fs.createWriteStream(resultsDirectory+'completeObjectDeclaration.txt');
+var partialwriteStreamObjects = fs.createWriteStream(resultsDirectory+'partialObjectDeclaration.txt');
+var partialwriteStreamObjectsDetailed = fs.createWriteStream(resultsDirectory+'partialObjectDeclarationWithDetails.txt');
 
 for (var i = 0; i < files.length; i++) {
   analyzeObjectFile(files[i]);
@@ -23,6 +24,7 @@ function analyzeObjectFile(objectName) {
 
   fs.readFile(objectDirectory + objectName, function(err, data) {
       parser.parseString(data, function (err, result) {
+          var objectUML = '';
           var objData = result.CustomObject.fields;
           var objName = objectName.replace('.object','');
           var label = (result.CustomObject.label) ? result.CustomObject.label : objName;
@@ -41,11 +43,12 @@ function analyzeObjectFile(objectName) {
               hasLookUp = true;
               var reference = (element.referenceTo) ? element.referenceTo : (''+element.fullName).replace('Id','');
               reference = (reference === 'Parent') ? label : reference;
-              var baseRow = objName + ' --|> ' + reference;
+              var baseRow = objName + ' --> ' + reference;
               var simplerRow = baseRow+'\n';
               var rowToWrite = baseRow+' : '+element.fullName+'\n';
               mappingFieldSet.push({fieldName : element.fullName,referenceTo : reference, objName});
               writeStream.write(rowToWrite);
+              objectUML += rowToWrite;
               if(referenceSet.indexOf(reference[0]) > -1){
                 continue;
               }
@@ -56,11 +59,17 @@ function analyzeObjectFile(objectName) {
 
           }
           writeStream.write('\n');
-
-
           if(!hasLookUp){
             return;
           }
+
+          fs.writeFile(resultsDirectory+'singleObjects/'+objName + '.uml', objectUML, function(err) {
+            if (err){
+              throw err;
+            }
+            console.log(objectName + ': file saved');
+          });
+
           partialwriteStreamObjectsDetailed.write(objDeclaration+'\n\n');
           partialwriteStreamObjects.write(objDeclaration+'\n\n');
           for (var referenceKey in mappingFieldSet) {
