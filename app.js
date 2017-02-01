@@ -43,7 +43,7 @@ function analyzeObjectFile(objectName) {
               hasLookUp = true;
               var reference = (element.referenceTo) ? element.referenceTo : (''+element.fullName).replace('Id','');
               reference = (reference === 'Parent') ? label : reference;
-              var baseRow = objName + ' --> ' + reference;
+              var baseRow = objName + ' --|> ' + reference;
               var simplerRow = baseRow+'\n';
               var rowToWrite = baseRow+' : '+element.fullName+'\n';
               mappingFieldSet.push({fieldName : element.fullName,referenceTo : reference, objName});
