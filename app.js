@@ -41,8 +41,8 @@ function analyzeObjectFile(objectName) {
 function arrayToString(element) {
   for (var variable in element) {
     if (element.hasOwnProperty(variable)) {
-      if(variable == 'picklist'){
-        formatPickListValues(element,'picklist');
+      if(element[variable][0] === 'Picklist'){
+        formatPickListValues(element);
       }
 
       if(typeof element[variable][0] == 'string'){
@@ -54,12 +54,18 @@ function arrayToString(element) {
   }
 }
 
-function formatPickListValues(element,propertyName) {
+function formatPickListValues(element) {
   var controllingField = '';
-  if(element[propertyName][0].hasOwnProperty('controllingField')){
-    controllingField = element[propertyName][0].controllingField[0];
+  if (!element.valueSet){
+    return;
   }
-  var pickListValues = element[propertyName][0].picklistValues;
+  if (!element.valueSet[0].valueSetDefinition){
+    return;
+  }
+  if(element.valueSet[0].hasOwnProperty('controllingField')){
+    controllingField = element.valueSet[0].controllingField[0];
+  }
+  var pickListValues = element.valueSet[0].valueSetDefinition[0].value;
   var pickListValuesToString = '';
   var defaultPicklistValue = '';
   for (var i in pickListValues) {
